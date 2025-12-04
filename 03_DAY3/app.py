@@ -1,12 +1,18 @@
 import mysql.connector
 from faker import Faker
 import random
+import dotenv
+import os
+
+
+dotenv.load_dotenv()
+DB_PWD = os.getenv("DB_PWD")
 
 # MySQL 연결 설정
 db_connection = mysql.connector.connect(
     host = "localhost",
     user = "root",
-    password = "@qudwns12",
+    password = DB_PWD,
     database = "testdatabase"
 )
 
