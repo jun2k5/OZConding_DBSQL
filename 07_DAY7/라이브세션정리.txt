@@ -1,0 +1,70 @@
+12일차 오즈코딩 라이브세션
+1209 04:30
+
+ENUM = 사용자 정의 타입
+개수가 몇개 안되고 들어가는 도메인이 정해져 있는 경우.
+ex) ENUM(’상품준비중’, ‘결제완료’, ‘입금대기’, ‘배송중’, ‘배송완료’, ‘취소완료’)
+
+
+SQL 실무 팁
+
+SELECT 문
+-코드단에서 절대 SELECT * 을 사용하지 말 것 ( 단순 조회시에만 사용하기 )
+-나중에 컬럼 추가시 문제될 수 있음
+
+INSERT 문
+-컬럼명을 명시할 것.
+-나중에 컬럼 추가시 문제될 수 있음
+
+UPDATE 문
+-반드시 WHERE 절을 명시할 것.
+-누락 시 전체 데이터가 수정되는 대참사가 발생
+
+DELETE 문
+-반드시 WHERE 절을 명시할 것
+-실무에서는 주로 soft delete 방식 사용 ( is_deleted 컬럼 사용 등 )
+
+추가 팁
+-테스트시 LIMIT 사용하기 ( DB의 부하를 줄이기 위해 )
+-먼저 SELECT로 영향 범위 확인 후 UPDATE / DELETE 실행하기
+
+=============================================
+
+
+-- 인덱스 생성 쿼리
+-- ALTER TABLE book ADD INDEX idx_title (title);
+
+SELECT * FROM book WHERE title = 'Needle';
+
+
+============================================
+-- 할인 정보 조회
+SELECT
+	b.price,
+    IFNULL(d.discount_amount, 0)
+INTO
+	@price,
+	@discount_amount
+FROM books b
+LEFT JOIN book_discounts d
+	ON d.book_id = b.id
+WHERE b.id = 1
+LIMIT 1
+;
+
+SELECT 문의 결과를 @price와 @discount_amount 변수에 넣겠다.
+
+START TRANSACTION; -- 트랜젝션을 이용하는 SQL
+
+COMMIT; --트랜젝션이 끝나고 COMMIT 
+
+LOCKING 기법에서 LOCK이 비용이 비싸다.
+때문에 대부분의 현대 DBMS (MySQL, PostgreSQL 등)은 MVCC 기법으로 동시성을 제어한다.
+MVCC는 락을 사용하지 않기 때문에 비용이 저렴함.
+
+================
+
+RAG - AI모델에 DB 부착하는 것.
+MCP - AI모델에 사전 프롬프트로 미리 상황에 맞는 지식이나 방식을 알려주는 것.
+
+RAG와 MCP를 이용한 AI모델을 만들어 적용해보기
